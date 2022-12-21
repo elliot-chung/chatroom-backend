@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"chatroom/internal"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/websocket"
 )
 
 const (
@@ -14,40 +12,17 @@ const (
 	CONN_TYPE = "tcp"
 )
 
-var originWhitelist = []string{"http://localhost:5173",
-	"http://localhost:3334", "http://localhost:3335"}
-
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		for _, origin := range originWhitelist {
-			if r.Header.Get("Origin") == origin {
-				return true
-			}
-		}
-		return false
-	},
-}
-
 func main() {
+	bh := internal.NewBroadcastHub()
+	canvas := internal.NewCanvas()
+	go bh.Run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			log.Print("upgrade failed: ", err)
-			return
-		}
-		defer conn.Close()
-
-		for {
-			// Read message from browser
-			_, msg, err := conn.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				break
-			}
-			fmt.Println(string(msg))
-		}
+		internal.RequestHandler(canvas, bh, w, r)
 	})
 
 	log.Println("Listening on " + CONN_HOST + ":" + CONN_PORT + "...")
-	http.ListenAndServe(CONN_HOST+":"+CONN_PORT, nil)
+	err := http.ListenAndServe(CONN_HOST+":"+CONN_PORT, nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
