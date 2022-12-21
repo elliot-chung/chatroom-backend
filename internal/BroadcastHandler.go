@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"time"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -38,6 +40,7 @@ func (h *BroadcastHub) Run() {
 				c.Close()
 			}
 		case m := <-h.broadcast:
+			time.Sleep(10 * time.Millisecond) // 10 ms rebroadcast delay
 			for c := range h.connections {
 				c.WriteMessage(websocket.TextMessage, m)
 			}

@@ -34,6 +34,12 @@ func (c Canvas) SetCoordinate(x, y int, color int) {
 	c[100*y+x] = color
 }
 
+func (c Canvas) clear() {
+	for i := 0; i < 10000; i++ {
+		c[i] = 0xffffff
+	}
+}
+
 func (c Canvas) String() string {
 	s := ""
 	for i := 0; i < 100; i++ {

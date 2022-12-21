@@ -2,7 +2,6 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -50,7 +49,7 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 	// Send canvas to client
 	data, err := canvas.MarshalJSON()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		hub.unregister <- conn
 		return
 	}
@@ -68,6 +67,7 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 		// Handle different message types
 		switch msg.Type {
 		case "message":
+			log.Println("Message from", msg.User, ":", msg.Text)
 			// Broadcast message to all clients
 			jsonMessage, err := json.Marshal(struct {
 				Type  string
@@ -82,7 +82,7 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 			})
 
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 				hub.unregister <- conn
 				break
 			}
@@ -91,12 +91,12 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 
 		case "draw":
 			// Draw on canvas
-			fmt.Println("Drawing at", msg.X, msg.Y, "with color", msg.Color)
+			log.Println("Drawing at", msg.X, msg.Y, "with color", msg.Color)
 			canvas.SetCoordinate(msg.X, msg.Y, msg.Color)
 			data, err := canvas.MarshalJSON()
 
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 				hub.unregister <- conn
 				break
 			}

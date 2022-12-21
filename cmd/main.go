@@ -15,6 +15,7 @@ const (
 func main() {
 	bh := internal.NewBroadcastHub()
 	canvas := internal.NewCanvas()
+	go internal.CanvasCleaner(canvas)
 	go bh.Run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		internal.RequestHandler(canvas, bh, w, r)
