@@ -7,9 +7,8 @@ import (
 )
 
 const (
-	CONN_HOST = "localhost"
-	CONN_PORT = "3333"
-	CONN_TYPE = "tcp"
+	CONN_HOST = ""
+	CONN_PORT = "443"
 )
 
 func main() {
