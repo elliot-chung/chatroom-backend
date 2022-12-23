@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+chatroom
 
 # Test binary, built with `go test -c`
 *.test
