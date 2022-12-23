@@ -2,7 +2,6 @@ package main
 
 import (
 	"chatroom/internal"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,14 +15,20 @@ func main() {
 	canvas := internal.NewCanvas()
 	go internal.CanvasCleaner(canvas)
 	go bh.Run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// hello world, the web server
+		w.Write([]byte("Hello, World!"))
+	})
+
+	http.HandleFunc("/chatroom", func(w http.ResponseWriter, r *http.Request) {
 		internal.RequestHandler(canvas, bh, w, r)
 	})
 
 	// creates a new file watcher for App_offline.htm
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		fmt.Println("ERROR", err)
+		log.Println("ERROR", err)
 	}
 	defer watcher.Close()
 
@@ -33,7 +38,7 @@ func main() {
 	go func() {
 		for event := range watcher.Events {
 			if strings.HasSuffix(event.Name, "app_offline.htm") {
-				fmt.Println("Exiting due to app_offline.htm being present")
+				log.Println("Exiting due to app_offline.htm being present")
 				os.Exit(0)
 			}
 		}
@@ -42,11 +47,11 @@ func main() {
 	// get the current working directory and watch it
 	currentDir, err := os.Getwd()
 	if err != nil {
-		fmt.Println("ERROR", err)
+		log.Println("ERROR", err)
 	}
 
 	if err := watcher.Add(currentDir); err != nil {
-		fmt.Println("ERROR", err)
+		log.Println("ERROR", err)
 	}
 
 	port := os.Getenv("SERVER_PORT")
