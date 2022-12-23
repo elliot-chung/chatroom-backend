@@ -12,6 +12,23 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+
+    name: Make deploy folder
+    steps:
+    - name: Make directory
+      run: mkdir deploy
+    
+    - name: Copy internal contents
+      run: mv /internal deploy/
+
+    - name: Copy main
+      run: mv main.go deploy/
+    
+    - name: Copy mod
+      run: mv go.mod deploy/
+
+    - name: Copy sum
+      run: mv go.sum deploy/
       
     - name: Deploy to Azure
       uses: Azure/webapps-deploy@v2
@@ -19,5 +36,5 @@ jobs:
         # Name of the Azure Web App
         app-name: chatroom-backend
         # Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy
-        package: /
+        package: /deploy
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
