@@ -62,7 +62,7 @@ func main() {
 	}
 
 	log.Println("Listening on " + hostname + ":" + port)
-	err = http.ListenAndServe(hostname+":"+port, nil)
+	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
