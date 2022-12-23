@@ -14,10 +14,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Copy internal
-      run: xcopy internal build/internal /i 
+      run: xcopy ./internal ./build/internal /i 
 
     - name: Copy main
-      run: xcopy main.go build/main.go 
+      run: xcopy ./main.go ./build/main.go 
       
     - name: Deploy to Azure
       uses: Azure/webapps-deploy@v2
