@@ -19,15 +19,14 @@ type Request struct {
 
 var originWhitelist = []string{
 	"http://localhost:5173",
-	"https://chatroom-frontend-one.vercel.app/",
-	"https://chatroom-frontend-ec-2018.vercel.app/",
-	"https://chatroom-frontend-git-main-ec-2018.vercel.app/",
+	"https://chatroom-frontend-one.vercel.app",
+	"https://chatroom-frontend-ec-2018.vercel.app",
+	"https://chatroom-frontend-git-main-ec-2018.vercel.app",
 }
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		for _, origin := range originWhitelist {
-			log.Println("Origin:", r.Header.Get("Origin"))
 			if r.Header.Get("Origin") == origin {
 				return true
 			}
