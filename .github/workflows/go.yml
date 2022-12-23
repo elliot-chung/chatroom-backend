@@ -34,5 +34,5 @@ jobs:
         # Name of the Azure Web App
         app-name: chatroom-backend
         # Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy
-        package: /deploy
+        package: deploy/
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
