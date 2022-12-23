@@ -12,12 +12,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-
-    - name: Copy internal
-      run: xcopy "./internal" "./build/internal" /i 
-
-    - name: Copy main
-      run: xcopy "./main.go" "./build/main.go" 
       
     - name: Deploy to Azure
       uses: Azure/webapps-deploy@v2
