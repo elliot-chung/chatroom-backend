@@ -54,10 +54,11 @@ func main() {
 		log.Println("ERROR", err)
 	}
 
+	// Azure env variables
 	hostname := os.Getenv("WEBSITE_HOSTNAME")
-	port := os.Getenv("HTTP_PLATFORM_PORT")
+	port := os.Getenv("WEBSITE_PORT")
 	if port == "" {
-		port = "8080"
+		port = "8000"
 	}
 
 	log.Println("Listening on " + hostname + ":" + port)
