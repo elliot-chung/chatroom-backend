@@ -54,13 +54,14 @@ func main() {
 		log.Println("ERROR", err)
 	}
 
-	port := os.Getenv("SERVER_PORT")
+	hostname := os.Getenv("WEBSITE_HOSTNAME")
+	port := os.Getenv("HTTP_PLATFORM_PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	log.Println("Listening on " + port)
-	err = http.ListenAndServe(":"+port, nil)
+	log.Println("Listening on " + hostname + ":" + port)
+	err = http.ListenAndServe(hostname+":"+port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
