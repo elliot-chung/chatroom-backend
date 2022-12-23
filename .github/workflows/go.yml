@@ -15,9 +15,9 @@ jobs:
 
     - name: Make directory
       run: mkdir deploy
-      
+
     - name: Copy internal contents
-      run: mv /internal deploy/
+      run: mv internal deploy/
 
     - name: Copy main
       run: mv main.go deploy/
