@@ -13,16 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.18
+    - name: Copy internal
+      run: xcopy /i internal build/internal
 
-    - name: Build
-      run: go build -o build/server.exe -v
-
-    - name: Test
-      run: go test
+    - name: Copy main
+      run: xcopy main.go build/main.go 
       
     - name: Deploy to Azure
       uses: Azure/webapps-deploy@v2
