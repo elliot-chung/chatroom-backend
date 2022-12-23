@@ -13,11 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    name: Make deploy folder
-    steps:
     - name: Make directory
       run: mkdir deploy
-    
+      
     - name: Copy internal contents
       run: mv /internal deploy/
 
