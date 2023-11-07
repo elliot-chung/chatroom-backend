@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for chatroom-backend on 2023-09-27T21:35:08-07:00
+# fly.toml app configuration file generated for chatroom-backend on 2023-11-07T01:56:22-08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -16,6 +16,8 @@ primary_region = "lax"
 [[services]]
   protocol = "tcp"
   internal_port = 8080
+  auto_stop_machines = true
+  auto_start_machines = true
 
   [[services.ports]]
     port = 80
