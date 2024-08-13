@@ -18,7 +18,7 @@ type Request struct {
 }
 
 var originWhitelist = []string{
-	"http://localhost:5173",
+	"http://localhost:5174",
 	"https://chatroom-frontend-one.vercel.app",
 	"https://chatroom-frontend-ec-2018.vercel.app",
 	"https://chatroom-frontend-git-main-ec-2018.vercel.app",
@@ -45,6 +45,12 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 
 	// Register our new client
 	hub.register <- conn
+	log.Println("connection established:", conn.RemoteAddr())
+	conn.SetCloseHandler(func(code int, text string) error {
+		log.Println("connection closed:", conn.RemoteAddr())
+		hub.unregister <- conn
+		return nil
+	})
 
 	// Send canvas to client
 	data, err := canvas.MarshalJSON()
@@ -60,14 +66,21 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 		var msg Request
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			log.Println("read:", err)
+			if websocket.IsCloseError(err,
+				websocket.CloseNormalClosure,
+				websocket.CloseGoingAway,
+				websocket.CloseNoStatusReceived,
+				websocket.CloseAbnormalClosure) {
+				break
+			}
+			log.Println("Read Error:", err)
 			break
 		}
 
 		// Handle different message types
 		switch msg.Type {
 		case "message":
-			log.Println("Message from", msg.User, ":", msg.Text)
+			log.Println("Message from", conn.RemoteAddr(), "("+msg.User+")", ":", msg.Text)
 			// Broadcast message to all clients
 			jsonMessage, err := json.Marshal(struct {
 				Type  string
@@ -91,7 +104,7 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 
 		case "draw":
 			// Draw on canvas
-			log.Println("Drawing at", msg.X, msg.Y, "with color", msg.Color)
+			log.Println(conn.RemoteAddr(), "drawing at", msg.X, msg.Y, "with color", msg.Color)
 			canvas.SetCoordinate(msg.X, msg.Y, msg.Color)
 			data, err := canvas.MarshalJSON()
 

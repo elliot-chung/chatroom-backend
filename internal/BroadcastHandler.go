@@ -35,10 +35,7 @@ func (h *BroadcastHub) Run() {
 		case c := <-h.register:
 			h.connections[c] = true
 		case c := <-h.unregister:
-			if _, ok := h.connections[c]; ok {
-				delete(h.connections, c)
-				c.Close()
-			}
+			delete(h.connections, c)
 		case m := <-h.broadcast:
 			time.Sleep(10 * time.Millisecond) // 10 ms rebroadcast delay
 			for c := range h.connections {
