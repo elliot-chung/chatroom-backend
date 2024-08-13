@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -41,16 +42,16 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 		log.Print("upgrade failed: ", err)
 		return
 	}
-	defer conn.Close()
 
 	// Register our new client
 	hub.register <- conn
 	log.Println("connection established:", conn.RemoteAddr())
-	conn.SetCloseHandler(func(code int, text string) error {
+	defer func() error {
 		log.Println("connection closed:", conn.RemoteAddr())
 		hub.unregister <- conn
+		conn.Close()
 		return nil
-	})
+	}()
 
 	// Send canvas to client
 	data, err := canvas.MarshalJSON()
@@ -64,6 +65,7 @@ func RequestHandler(canvas *Canvas, hub *BroadcastHub, w http.ResponseWriter, r 
 	for {
 		// Read message as json
 		var msg Request
+		conn.SetReadDeadline(time.Now().Add(time.Minute * 20)) // 20 minutes
 		err := conn.ReadJSON(&msg)
 		if err != nil {
 			if websocket.IsCloseError(err,

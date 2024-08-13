@@ -2,6 +2,7 @@ package main
 
 import (
 	"chatroom/internal"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,11 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// hello world, the web server
 		w.Write([]byte("Hello, World!"))
+	})
+
+	http.HandleFunc("/connections", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(fmt.Sprintf("%d", bh.ConnectionCount())))
+		log.Println(bh.ConnectionCount())
 	})
 
 	http.HandleFunc("/chatroom", func(w http.ResponseWriter, r *http.Request) {

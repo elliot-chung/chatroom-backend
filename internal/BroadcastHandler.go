@@ -29,6 +29,10 @@ func NewBroadcastHub() *BroadcastHub {
 	}
 }
 
+func (h *BroadcastHub) ConnectionCount() int {
+	return len(h.connections)
+}
+
 func (h *BroadcastHub) Run() {
 	for {
 		select {
